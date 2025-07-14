@@ -1,7 +1,7 @@
 CXX=g++
 CXXFLAGS= -MMD -Wall -Wextra -pedantic -std=c++17 -O2
 INCLUDES=-Iinclude -IC:/msys64/ucrt64/include/SDL2
-LIBS=-lSDL2 -lSDL2_image
+LIBS=-lSDL2 -lSDL2_image -lSDL2_ttf
 
 SRC=$(wildcard src/*.cpp)
 OBJ=$(SRC:src/%.cpp=obj/%.o)

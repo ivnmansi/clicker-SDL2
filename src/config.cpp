@@ -2,8 +2,8 @@
  * @file config.cpp
  * @author Iván Mansilla
  * @brief SDL configurations and other handling.
- * @version 0.1
- * @date 2025-07-12
+ * @version 0.2
+ * @date 2025-07-13
  * 
  * 
  */
@@ -11,6 +11,13 @@
 
 const char* GAME_TITLE = "SDL2 CLICKER ALPHA";
 
+/**
+ * @brief Initialize SDL, create a window and renderer.
+ * 
+ * @param window 
+ * @param renderer 
+ * @return int 0 on success, -1 on failure.
+ */
 int init_SDL(SDL_Window** window, SDL_Renderer** renderer) {
 
     // try to init SDL
@@ -25,6 +32,13 @@ int init_SDL(SDL_Window** window, SDL_Renderer** renderer) {
         return -1;
     }
 
+    // init SDL_ttf
+    if(TTF_Init() == -1){
+        SDL_Log("ERROR: SDL_ttf could not initialize. %s\n", TTF_GetError());
+        return -1;
+    }
+
+    // create the window and renderer
     *window = SDL_CreateWindow(
         GAME_TITLE,
         SDL_WINDOWPOS_CENTERED,

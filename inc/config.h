@@ -1,4 +1,12 @@
-
+/**
+ * @file config.h
+ * @author Iván
+ * @brief Config things for the game
+ * @version 0.1
+ * @date 2025-07-13
+ * 
+ * 
+ */
 #ifdef _WIN32
     #define SDL_MAIN_HANDLED
 #endif

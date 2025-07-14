@@ -1,9 +1,9 @@
 /**
  * @file objects.h
- * @author Iván Mansilla
+ * @author Iván
  * @brief  Object management, creation, and interaction.
- * @version 0.1
- * @date 2025-07-12
+ * @version 0.2
+ * @date 2025-07-13
  * 
  * 
  */
@@ -19,6 +19,10 @@
 class TextureManager;
 class Object;
 
+/**
+ * @class ObjectManager
+ * @brief Manages the creation, destruction, and interaction of objects in the game.
+ */
 class ObjectManager{
     private:
         std::map<std::string, Object*> allObjects; /*!< Map of all objects*/
@@ -47,18 +51,32 @@ class ObjectManager{
         int handleMouseOver(SDL_Event& e);
 };
 
+/**
+ * @class Object
+ * @brief Represents a game object
+ */
 class Object {
     public:
         std::string id; /*!< ID of the object */
-        bool isActive = true; /*!< Whether the object is active */
+        bool isActive = true; /*!< Whether the project must be draw on the screen*/
         float x; /*!< X coordinate of the object */
         float y; /*!< X and Y coordinates of the object */
         float width; /*!< Width of the object */
         float height; /*!< Height of the object */
         std::string textureId; /*!< ID of the texture associated with this object */
-        bool isClickable;
+        bool isClickable; /*! Whether the object can be clicked by the player an execute an action*/
 
-        Object() = default;
+        /**
+         * @brief Construct a new Object object
+         * 
+         * @param id 
+         * @param x 
+         * @param y 
+         * @param width 
+         * @param height 
+         * @param textureId 
+         * @param isClickable 
+         */
         Object(std::string id, float x, float y, float width, float height, std::string textureId, bool isClickable = false) {
             this->id = id;
             this->isActive = false;
@@ -78,7 +96,7 @@ class Object {
         void resize(float newWidth, float newHeight);
         int changeTexture(const std::string& newTextureId, TextureManager& textureManager);
 
-        bool isMouseOver(SDL_Event& e, int mouseX, int mouseY);
+        bool isMouseOver(int mouseX, int mouseY);
 
         virtual void onRelease() {}
         virtual void onClick() {}

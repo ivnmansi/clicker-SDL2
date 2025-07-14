@@ -2,14 +2,14 @@
  * @file objects.cpp
  * @author Iván Mansilla
  * @brief  Object management, creation, and interaction.
- * @version 0.1
- * @date 2025-07-12
+ * @version 0.2
+ * @date 2025-07-13
  * 
  * 
  */
 
 #include "../inc/objects.h"
-// Ensure the full definition of Object is available
+
 
 /**
  * @brief Draws the object
@@ -79,7 +79,7 @@ int Object::changeTexture(const std::string& newTextureId, TextureManager& textu
  * @return true If the mouse is over the object
  * @return false If the mouse is not over the object
  */
-bool Object::isMouseOver(SDL_Event& e, int mouseX, int mouseY) {
+bool Object::isMouseOver(int mouseX, int mouseY) {
     return (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height);
 }
 
@@ -268,7 +268,7 @@ int ObjectManager::handleMouseClick(SDL_Event& e) {
     int mouseY = e.button.y;
 
     for (auto& obj : clickActiveObjects) {
-        if (obj->isMouseOver(e, mouseX, mouseY)) {
+        if (obj->isMouseOver(mouseX, mouseY)) {
             obj->onClick();
             return 0;
         }
@@ -276,12 +276,18 @@ int ObjectManager::handleMouseClick(SDL_Event& e) {
     return -1;
 }
 
+/**
+ * @brief Handles mouse release events for clickable objects.
+ * 
+ * @param e 
+ * @return int 
+ */
 int ObjectManager::handleMouseRelease(SDL_Event& e) {
     int mouseX = e.button.x;
     int mouseY = e.button.y;
 
     for (auto& obj : clickActiveObjects) {
-        if (obj->isMouseOver(e, mouseX, mouseY)) {
+        if (obj->isMouseOver(mouseX, mouseY)) {
             obj->onRelease();
             return 0;
         }
@@ -300,8 +306,8 @@ int ObjectManager::handleMouseOver(SDL_Event& e) {
     int mouseX = e.motion.x;
     int mouseY = e.motion.y;
 
-    for (auto& obj : clickActiveObjects) {
-        if (obj->isMouseOver(e, mouseX, mouseY)) {
+    for (auto& obj : activeObjects) {
+        if (obj->isMouseOver(mouseX, mouseY)) {
             obj->onMouseOver();
             return 0;
         } else {

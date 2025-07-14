@@ -3,8 +3,8 @@
  * @file main.cpp
  * @author Iván Mansilla
  * @brief Main entry point.
- * @version 0.1
- * @date 2025-07-12
+ * @version 0.2
+ * @date 2025-07-13
  * 
  * 
  */
@@ -13,11 +13,13 @@
 #include "../inc/player.h"
 #include "../inc/clickthing.h"
 #include "../inc/config.h"
+#include "../inc/text.h"
+#include "../inc/store.h"
 
-#
 
 int main( int argc, char* args[] )
 {
+	srand(time(NULL));
 
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
@@ -32,6 +34,7 @@ int main( int argc, char* args[] )
 	// Initialize texture manager
 	TextureManager textureManager(&renderer);
 	textureManager.loadAllTextures(TEXTURE_PATH);
+	textureManager.loadAllFonts(FONT_PATH);
 
 	// Create the object manager
 	ObjectManager objectManager;
@@ -41,6 +44,46 @@ int main( int argc, char* args[] )
 
 	// Create the clickable thing
 	ClickThing clicky = ClickThing(&player,&objectManager);
+
+	// add points text
+	Text pointsText = Text(
+		"points",
+		300, 50, 200, 50,
+		"points: 0",
+		textureManager.getFont("supervcrmono24"),
+		{255, 255, 255, 255}
+	);
+
+	// add points per click text
+	Text pointsPerClickText = Text(
+		"points_per_click",
+		100, 400, 200, 50,
+		"Points per click: 1",
+		textureManager.getFont("supervcrmono24"),
+		{255, 255, 255, 255}
+	);
+
+
+	// make a store
+	Store store = Store(310,100,300,300,"store", &objectManager);
+	objectManager.activateObject("Store");
+
+	// make an item
+	Item exampleItem = Item(
+		"example_item",
+		320,180,100,100,
+		"upgrade_example",
+		100,
+		"An example item for the store.",
+		[](Player* player){
+			player->addMultiplier(1.0f);
+		},
+		1,//0-1
+		&store, 
+		&player
+	);
+
+	store.randomizeAvailableItems();
 	
 
 
@@ -67,7 +110,15 @@ int main( int argc, char* args[] )
 		}
 		SDL_RenderClear(renderer);
 
+		store.updateStore(&player);
+
 		objectManager.drawActiveObjects(textureManager);
+
+		pointsText.setContent("Points: " + std::to_string(player.getPoints()), renderer);
+		pointsPerClickText.setContent("Points per click: " + std::to_string(player.getMultiplier()), renderer);
+
+		pointsText.drawText(renderer);
+		pointsPerClickText.drawText(renderer);
 		
 		SDL_RenderPresent(renderer);
         SDL_Delay(16);
