@@ -18,17 +18,22 @@
 
 class TextureManager;
 class Object;
+class Text;
 
 /**
  * @class ObjectManager
  * @brief Manages the creation, destruction, and interaction of objects in the game.
  */
 class ObjectManager{
-    private:
+
+    public:
+
         std::map<std::string, Object*> allObjects; /*!< Map of all objects*/
         std::vector<Object*> activeObjects; /*!< List of active objects*/
         std::vector<Object*> clickActiveObjects; /*< List of active and clickable objects*/
-    public:
+
+        std::vector<Text*> textObjects; /*< List of text objects*/
+
         ObjectManager() = default;
 
         void createObject(const std::string& id, float x, float y, float width, float height, const std::string& textureId, bool isClickable = false);
@@ -49,6 +54,8 @@ class ObjectManager{
         int handleMouseRelease(SDL_Event& e);
         int handleMouseClick(SDL_Event& e);
         int handleMouseOver(SDL_Event& e);
+
+        void drawAllTexts(SDL_Renderer** rendererPtr);
 };
 
 /**

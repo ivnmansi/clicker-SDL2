@@ -31,11 +31,10 @@ public:
     float prob; /*!< Probability of the item appearing in the store */
     int level; /*!< Level of the item */
 
-    Item(std::string id, float x, float y, float width, float height, std::string textureId, 
-         int cost, std::string description, std::function<void(Player*)> onPurchase, 
-         float prob, Store* store, Player* player);
+    Item(std::string id, std::string textureId, int cost, std::string description, std::function<void(Player*)> onPurchase, float prob, Store* store, Player* player);
 
     void onClick() override;
+    void onRelease() override;
 };
 
 /**
@@ -66,8 +65,8 @@ public:
     void addItem(Item* item);
     void removeItem(const std::string& id);
     Item* getItemById(const std::string& id);
-    void makeItemAvailable(const std::string& id, ObjectManager* objManager);
-    void makeItemUnavailable(const std::string& id, ObjectManager* objManager);
+    void makeItemAvailable(const std::string& id);
+    void makeItemUnavailable(const std::string& id);
     void randomizeAvailableItems();
     void updateStore(Player* player);
 };

@@ -1,5 +1,16 @@
 #include "../inc/text.h"
 
+const char* DEFAULT_FONT = "BitPap24";
+
+Text::Text(std::string id, float x, float y, float width, float height, std::string content, TTF_Font** font, SDL_Color color, ObjectManager* objManager) : Object(id, x, y, width, height, "__text__", false) {
+    this->content = content;
+    this->font = font;
+    this->color = color;
+    this->objManager = objManager;
+    objManager->addObject(this);
+    objManager->textObjects.push_back(this);
+}
+
 /**
  * @brief Sets the content of the text object and updates its texture. Textures of text objects are managed by themselves rather than the texture manager.
  * 
@@ -41,12 +52,16 @@
   * 
   * @param renderer 
   */
- void Text::drawText(SDL_Renderer* renderer) {
+ void Text::drawText(SDL_Renderer** renderer) {
     if(!texture) {
         SDL_Log("ERROR: Texture for text '%s' is not set.\n", id.c_str());
         return;
     }
 
+    if(!isActive){
+        return;
+    }
+
     SDL_Rect dstRect = { static_cast<int>(x), static_cast<int>(y), static_cast<int>(width), static_cast<int>(height) };
-    SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
+    SDL_RenderCopy(*renderer, texture, nullptr, &dstRect);
  }

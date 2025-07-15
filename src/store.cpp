@@ -16,8 +16,8 @@
  * @param store 
  * @param player 
  */
-Item::Item(std::string id, float x, float y, float width, float height, std::string textureId, int cost, std::string description, std::function<void(Player*)> onPurchase, float prob, Store* store, Player* player)
-: Object(id, x, y, width, height, textureId), cost(cost), description(description), onPurchase(onPurchase), prob(prob), playerPtr(player), store(store) {
+Item::Item(std::string id, std::string textureId, int cost, std::string description, std::function<void(Player*)> onPurchase, float prob, Store* store, Player* player)
+: Object(id, 380, 140, 90, 90, textureId), cost(cost), description(description), onPurchase(onPurchase), prob(prob), playerPtr(player), store(store) {
 
     level=1;
     store->addItem(this);
@@ -29,6 +29,9 @@ Item::Item(std::string id, float x, float y, float width, float height, std::str
  * 
  */
 void Item::onClick() {
+    height = height - 10;
+    width = width - 10;
+
     if(playerPtr->getPoints() < cost) {
         SDL_Log("Not enough points to purchase item '%s' (%d)", id.c_str(), cost);
         return;
@@ -39,6 +42,11 @@ void Item::onClick() {
         level++;
         store->randomizeAvailableItems();
     }
+}
+
+void Item::onRelease() {
+    height = height + 10;
+    width = width + 10;
 }
 
 /**
@@ -92,7 +100,7 @@ Item* Store::getItemById(const std::string& id) {
  * @param id 
  * @param objManager 
  */
-void Store::makeItemAvailable(const std::string& id, ObjectManager* objManager){
+void Store::makeItemAvailable(const std::string& id){
     Item* item = getItemById(id);
     if(!item) {
         SDL_Log("ERROR: Cannot make item with ID %s available, it does not exist.\n", id.c_str());
@@ -109,7 +117,7 @@ void Store::makeItemAvailable(const std::string& id, ObjectManager* objManager){
  * @param id 
  * @param objManager 
  */
-void Store::makeItemUnavailable(const std::string& id, ObjectManager* objManager) {
+void Store::makeItemUnavailable(const std::string& id) {
     Item* item = getItemById(id);
     if(!item) {
         SDL_Log("ERROR: Cannot make item with ID %s unavailable, it does not exist.\n", id.c_str());
@@ -133,16 +141,29 @@ void Store::makeItemUnavailable(const std::string& id, ObjectManager* objManager
  * 
  */
 void Store::randomizeAvailableItems() {
+    
+    for (auto& item : availableItems){
+        makeItemUnavailable(item->id);
+    }
     availableItems.clear();
+
+    std::vector<std::pair<Item*, float>> candidates;
+
     for (auto& pair : items) {
         Item* item = pair.second;
-        float randomValue = static_cast<float>(rand()) / RAND_MAX; // 0.0-1.0
+        float randomValue = static_cast<float>(rand()) / RAND_MAX;
         if (item->prob > randomValue) {
-            makeItemAvailable(item->id, objManager);
-        } else {
-            makeItemUnavailable(item->id, objManager);
+            candidates.push_back({item,randomValue});
         }
     }
+
+    std::random_shuffle(candidates.begin(), candidates.end());
+
+    for(int i = 0; i < 3; i++){
+        candidates[i].first->y = 140 + i*80;
+        makeItemAvailable(candidates[i].first->id);
+    }
+
     SDL_Log("Randomized available items in the store. %d items available.\n", static_cast<int>(availableItems.size()));
 }
 

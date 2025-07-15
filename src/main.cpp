@@ -48,30 +48,68 @@ int main( int argc, char* args[] )
 	// add points text
 	Text pointsText = Text(
 		"points",
-		300, 50, 200, 50,
+		100, 50, 200, 50,
 		"points: 0",
-		textureManager.getFont("supervcrmono24"),
-		{255, 255, 255, 255}
+		textureManager.getFont(DEFAULT_FONT),
+		{255, 255, 255, 255},
+		&objectManager
 	);
+	objectManager.activateObject("points");
+	
 
 	// add points per click text
 	Text pointsPerClickText = Text(
 		"points_per_click",
 		100, 400, 200, 50,
 		"Points per click: 1",
-		textureManager.getFont("supervcrmono24"),
-		{255, 255, 255, 255}
+		textureManager.getFont(DEFAULT_FONT),
+		{255, 255, 255, 255},
+		&objectManager
 	);
+	objectManager.activateObject("points_per_click");
 
 
 	// make a store
-	Store store = Store(310,100,300,300,"store", &objectManager);
+	Store store = Store(
+		310,
+		10,
+		300,
+		400,
+		"store",
+		&objectManager);
 	objectManager.activateObject("Store");
 
 	// make an item
 	Item exampleItem = Item(
 		"example_item",
-		320,180,100,100,
+		"upgrade_example",
+		100,
+		"An example item for the store.",
+		[](Player* player){
+			player->addMultiplier(1.0f);
+		},
+		1,//0-1
+		&store, 
+		&player
+	);
+
+	// make an item
+	Item exampleItem2 = Item(
+		"example_item2",
+		"upgrade_example",
+		100,
+		"An example item for the store.",
+		[](Player* player){
+			player->addMultiplier(1.0f);
+		},
+		1,//0-1
+		&store, 
+		&player
+	);
+
+	// make an item
+	Item exampleItem3 = Item(
+		"example_item3",
 		"upgrade_example",
 		100,
 		"An example item for the store.",
@@ -112,13 +150,11 @@ int main( int argc, char* args[] )
 
 		store.updateStore(&player);
 
-		objectManager.drawActiveObjects(textureManager);
-
 		pointsText.setContent("Points: " + std::to_string(player.getPoints()), renderer);
 		pointsPerClickText.setContent("Points per click: " + std::to_string(player.getMultiplier()), renderer);
 
-		pointsText.drawText(renderer);
-		pointsPerClickText.drawText(renderer);
+		objectManager.drawActiveObjects(textureManager);
+		objectManager.drawAllTexts(&renderer);
 		
 		SDL_RenderPresent(renderer);
         SDL_Delay(16);

@@ -9,6 +9,7 @@
  */
 
 #include "../inc/objects.h"
+#include "../inc/text.h"
 
 
 /**
@@ -315,6 +316,12 @@ int ObjectManager::handleMouseOver(SDL_Event& e) {
         }
     }
     return -1;
+}
+
+void ObjectManager::drawAllTexts(SDL_Renderer** rendererPtr){
+    for(auto& text : textObjects){
+        text->drawText(rendererPtr);
+    }
 }
 
 

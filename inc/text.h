@@ -13,6 +13,8 @@
 #include "objects.h"
 #include "textureManager.h"
 
+extern const char* DEFAULT_FONT;
+
 /**
  * @class Text
  * @brief Represents a text object
@@ -23,6 +25,8 @@ class Text : public Object {
         TTF_Font** font; /*!< Font */
         SDL_Color color; /*!< Color of the text */
         SDL_Texture* texture = nullptr; /*!< Texture of the text */
+
+        ObjectManager* objManager = nullptr;
 
         /**
          * @brief Construct a new Text object
@@ -35,15 +39,12 @@ class Text : public Object {
          * @param content 
          * @param font 
          * @param color 
+         * @param objManager
          */
-        Text(std::string id, float x, float y, float width, float height, std::string content, TTF_Font** font, SDL_Color color) : Object(id, x, y, width, height, "__text__", false) {
-            this->content = content;
-            this->font = font;
-            this->color = color;
-        }
+        Text(std::string id, float x, float y, float width, float height, std::string content, TTF_Font** font, SDL_Color color, ObjectManager* objManager);
 
         void setContent(const std::string& newContent, SDL_Renderer* renderer);
-        void drawText(SDL_Renderer* renderer);
+        void drawText(SDL_Renderer** renderer);
 
 };
 
